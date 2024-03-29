@@ -1,16 +1,11 @@
-import { Stack, withLayoutContext } from "expo-router";
+import { withLayoutContext } from "expo-router";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import TweetHeader from "@/components/TweetHeader";
-import {
-  NavigationContainer,
-  createNavigationContainerRef,
-} from "@react-navigation/native";
+import { useAuth } from "@/context/AuthContext";
 import { Text } from "react-native";
 import {
   DrawerContentScrollView,
   DrawerItemList,
 } from "@react-navigation/drawer";
-import { createRef } from "react";
 
 const DrawerNavigator = createDrawerNavigator().Navigator;
 const Drawer = withLayoutContext(DrawerNavigator);

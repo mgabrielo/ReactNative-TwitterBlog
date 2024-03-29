@@ -3,15 +3,16 @@ import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
-  createNavigationContainerRef,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack, router, useNavigation } from "expo-router";
+useNavigation;
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
-
+import { createContext, useEffect, useState } from "react";
 import { useColorScheme } from "@/components/useColorScheme";
-import { View, Text } from "react-native";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const client = new QueryClient();
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -19,6 +20,7 @@ export {
 } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import TweetHeader from "@/components/TweetHeader";
+import AuthContextProvider from "@/context/AuthContext";
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
   initialRouteName: "(drawer)",
@@ -51,38 +53,59 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
+export const HeaderContext = createContext<any | null>(null);
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
+  const [headerName, setHeaderName] = useState("");
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen
-          name="(drawer)"
-          options={{
-            header() {
-              return <TweetHeader title="Twitter" />;
-            },
-          }}
-        />
-        {/* <Stack.Screen name="modal" options={{ presentation: "modal" }} /> */}
-        {/* <Stack.Screen
-          name="/tweet/[id]"
-          options={{
-            header(props) {
-              return <TweetHeader title="New Tweet" />;
-            },
-          }}
-        /> */}
-        <Stack.Screen
-          name="new-tweet"
-          options={{
-            header(props) {
-              return <TweetHeader title="New Tweet" />;
-            },
-          }}
-        />
-      </Stack>
-    </ThemeProvider>
+    <QueryClientProvider client={client}>
+      <AuthContextProvider>
+        <ThemeProvider
+          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        >
+          <HeaderContext.Provider value={{ setHeaderName }}>
+            <Stack>
+              <Stack.Screen
+                name="(drawer)"
+                options={{
+                  header() {
+                    return headerName !== "tweet/[id]" ? (
+                      <TweetHeader title="Twitter" />
+                    ) : null;
+                  },
+                }}
+              />
+              <Stack.Screen
+                name="new-tweet"
+                options={{
+                  header(props) {
+                    return <TweetHeader title="New Tweet" />;
+                  },
+                }}
+              />
+              <Stack.Screen
+                name="index"
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="(auth)/signIn"
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="(auth)/authenticate"
+                options={{
+                  title: "Confirm SignIn",
+                }}
+              />
+            </Stack>
+          </HeaderContext.Provider>
+        </ThemeProvider>
+      </AuthContextProvider>
+    </QueryClientProvider>
   );
 }

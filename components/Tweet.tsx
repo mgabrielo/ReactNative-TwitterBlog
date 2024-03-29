@@ -32,7 +32,7 @@ const Tweet: FC<TweetProps> = ({ tweet }) => {
                 <Image src={tweet?.image} style={styles.image} />
               </View>
             )}
-            <View style={styles.footer}>
+            <View style={styles.footerTweet}>
               <IconButton iconName={"comment"} text={tweet?.numberOfComments} />
               <IconButton iconName={"retweet"} text={tweet?.numberOfRetweets} />
               <IconButton iconName={"heart"} text={tweet?.numberOfLikes} />
@@ -53,6 +53,7 @@ export const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderBottomWidth: StyleSheet.hairlineWidth,
     backgroundColor: "white",
+    gap: 0,
   },
   userImage: {
     width: 50,
@@ -110,13 +111,13 @@ export const styles = StyleSheet.create({
   menuDots: {
     paddingHorizontal: 12,
   },
-  footer: {
+  footerTweet: {
     flex: 1,
+    display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 10,
+    paddingVertical: 10,
   },
-  footerIcon: {},
 });
 
 export default Tweet;

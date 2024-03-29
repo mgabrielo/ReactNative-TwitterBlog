@@ -2,15 +2,16 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { router, useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
 const TweetHeader = ({
   title,
-  navigation,
+  avatarVisible = true,
 }: {
   title: string;
-  navigation?: any;
+  avatarVisible?: boolean;
 }) => {
+  const navigation = useNavigation();
   function AvatarHeader() {
-    const navigation = useNavigation();
     return (
       <Pressable
         onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
@@ -36,12 +37,22 @@ const TweetHeader = ({
         borderBottomWidth: 1,
         borderColor: "#ccc",
         flexDirection: "row",
+        backgroundColor: "#fff",
         alignItems: "center",
       }}
     >
-      <View style={{ display: "flex", padding: 0 }}>
-        <AvatarHeader />
-      </View>
+      {avatarVisible ? (
+        <View style={{ display: "flex", padding: 0 }}>
+          <AvatarHeader />
+        </View>
+      ) : (
+        <Ionicons
+          name="arrow-back-outline"
+          size={24}
+          color="black"
+          onPress={() => navigation.goBack()}
+        />
+      )}
       <View
         style={{
           flex: 1,
